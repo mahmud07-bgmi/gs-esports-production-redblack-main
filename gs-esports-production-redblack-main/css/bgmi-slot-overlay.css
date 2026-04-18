@@ -1,0 +1,63 @@
+body {
+  margin: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: transparent;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.team-card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  display: block;
+}
+
+.bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.logo-wrap {
+  position: absolute;
+  left: 520px;
+  top: 914px;
+  width: 90px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.team-logo {
+  max-width: 74px;
+  max-height: 74px;
+  object-fit: contain;
+  display: block;
+}
+
+.team-name {
+  position: absolute;
+  left: 628px;
+  top: 916px;
+  width: 520px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  color: #111;
+  font-size: 28px;
+  font-weight: 900;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1;
+}
