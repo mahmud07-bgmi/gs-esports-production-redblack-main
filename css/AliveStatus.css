@@ -7,43 +7,73 @@
   font-style: normal;
 }
 
-body, .table-alive, .alive-rectangles, .table-alive th, .table-alive td {
+:root {
+  --bg-main: #140000;
+  --bg-dark: #090000;
+  --row-dark: rgba(255, 255, 255, 0.03);
+  --row-light: rgba(255, 0, 0, 0.08);
+  --row-hover: rgba(255, 60, 60, 0.16);
+
+  --header-1: #8B0000;
+  --header-2: #D10000;
+
+  --accent-red: #E10600;
+  --accent-red-2: #FF2A2A;
+  --accent-white: #FFFFFF;
+  --accent-soft: #F3F3F3;
+
+  --border-soft: rgba(255,255,255,0.16);
+  --glow-red: rgba(255, 0, 0, 0.35);
+}
+
+body,
+.table-alive,
+.alive-rectangles,
+.table-alive th,
+.table-alive td {
   font-family: 'Gonstet', 'Montserrat', Arial, sans-serif !important;
 }
 
-/* 🔵 Blue Zone Blink Effect */
+/* RED ALERT / BLUEZONE BLINK */
 @keyframes blink-blue-bg {
-  0%, 100% { background-color: inherit; }
-  50% { background-color: rgba(37, 99, 235, 0.25); }
+  0%, 100% {
+    background-color: inherit;
+  }
+  50% {
+    background-color: rgba(255, 0, 0, 0.22);
+  }
 }
 
 tr.bluezone-blink {
   animation: blink-blue-bg 1s linear infinite !important;
 }
 
-/* 🔥 MAIN TABLE */
+/* MAIN TABLE */
 .table-alive {
   border-collapse: separate;
   border-spacing: 0;
   width: 440px;
   margin: 40px auto;
-  background: linear-gradient(180deg, #0B1E3A 0%, #0A1630 100%);
-  color: #E5E7EB;
+  background: linear-gradient(180deg, var(--bg-main) 0%, var(--bg-dark) 100%);
+  color: var(--accent-soft);
   font-size: 18px;
   overflow: hidden;
-  border: 2px solid #FFD700;
-  box-shadow: 0 0 20px rgba(0, 102, 255, 0.4);
+  border: 2px solid rgba(255,255,255,0.2);
+  box-shadow:
+    0 0 18px var(--glow-red),
+    inset 0 0 20px rgba(255,255,255,0.03);
   position: relative;
+  border-radius: 14px;
 }
 
-/* 🔷 HEADER */
+/* HEADER */
 .table-alive thead tr {
-  background: linear-gradient(90deg, #1E3A8A 0%, #2563EB 100%);
+  background: linear-gradient(90deg, var(--header-1) 0%, var(--header-2) 100%);
   height: 48px;
 }
 
 .table-alive th {
-  color: #FFFFFF;
+  color: var(--accent-white);
   text-align: center;
   font-weight: 700;
   letter-spacing: 1px;
@@ -52,6 +82,7 @@ tr.bluezone-blink {
   vertical-align: middle;
   font-size: 15px;
   white-space: nowrap;
+  text-transform: uppercase;
 }
 
 .table-alive th.team {
@@ -59,22 +90,22 @@ tr.bluezone-blink {
   padding-left: 16px;
 }
 
-/* 🧊 ROWS */
+/* ROWS */
 .table-alive tbody tr {
   height: 50px;
-  background: rgba(255, 255, 255, 0.02);
-  transition: background 0.3s;
+  background: var(--row-dark);
+  transition: background 0.3s ease;
 }
 
 .table-alive tbody tr:nth-child(even) {
-  background: rgba(37, 99, 235, 0.08);
+  background: var(--row-light);
 }
 
 .table-alive tbody tr:hover {
-  background: rgba(59, 130, 246, 0.15);
+  background: var(--row-hover);
 }
 
-/* 🔤 TEXT */
+/* TEXT */
 .table-alive td {
   text-align: center;
   font-weight: 600;
@@ -84,12 +115,12 @@ tr.bluezone-blink {
   position: relative;
   padding: 0;
   vertical-align: middle;
-  color: #FFD700;
+  color: var(--accent-white);
   height: 50px;
   white-space: nowrap;
 }
 
-/* 👥 TEAM COLUMN */
+/* TEAM COLUMN */
 .table-alive td.team {
   display: flex;
   align-items: center;
@@ -97,7 +128,7 @@ tr.bluezone-blink {
   padding-left: 12px;
   padding-right: 12px;
   text-align: left;
-  color: #FFFFFF;
+  color: var(--accent-white);
   height: 50px;
   overflow: hidden;
 }
@@ -107,8 +138,8 @@ tr.bluezone-blink {
   height: 30px;
   border-radius: 6px;
   object-fit: contain;
-  background: #0F172A;
-  border: 2px solid #FFD700;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.25);
   flex-shrink: 0;
 }
 
@@ -118,9 +149,10 @@ tr.bluezone-blink {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: var(--accent-white);
 }
 
-/* 🟦 ALIVE BARS */
+/* ALIVE BARS */
 .alive-rectangles {
   display: flex;
   gap: 3px;
@@ -134,27 +166,31 @@ tr.bluezone-blink {
 .alive-rect-bar {
   width: 5px;
   height: 30px;
-  background: linear-gradient(180deg, #3B82F6, #1D4ED8);
-  border: 1px solid #1E40AF;
+  background: linear-gradient(180deg, #FF3B3B 0%, #B30000 100%);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 0 6px rgba(255, 0, 0, 0.25);
+  border-radius: 2px;
 }
 
 .alive-rect-bar.dead {
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: none;
 }
 
-/* ❌ STRIKE LINE */
+/* STRIKE LINE */
 .alive-rect-strike {
   position: absolute;
   left: 0;
   right: 0;
   top: 50%;
   height: 0;
-  border-top: 3px solid #FFD700;
+  border-top: 3px solid var(--accent-white);
   z-index: 2;
+  opacity: 0.9;
 }
 
-/* 🌌 BODY */
+/* BODY */
 body {
   background: transparent;
   min-height: 100vh;
@@ -163,7 +199,7 @@ body {
   overflow: hidden;
 }
 
-/* 🎬 SLIDE ANIMATION */
+/* SLIDE ANIMATION */
 .table-container {
   position: absolute;
   right: 0;
@@ -179,8 +215,10 @@ body {
   transform: translateX(500px);
 }
 
-/* ⚠️ STATES */
-#loading, #error, #nodata {
+/* STATES */
+#loading,
+#error,
+#nodata {
   color: #FFFFFF;
   text-align: center;
   margin-top: 40px;
