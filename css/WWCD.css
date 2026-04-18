@@ -18,16 +18,17 @@
   src: url('../font/ODIN.otf') format('opentype');
 }
 
+/* 🔴 COLOR CHANGE ONLY */
 :root {
-  --bg-dark: #050000;
-  --bg-light: #170000;
-  --bg-mid: #0d0000;
+  --espresso-black: #050000;
+  --dark-brown: #170000;
+  --shadow-brown: #0d0000;
 
-  --red-main: #E10600;
-  --red-bright: #FF2A2A;
-  --red-deep: #8B0000;
+  --gold-bright: #E10600;
+  --gold-warm: #FF2A2A;
+  --gold-burnt: #8B0000;
 
-  --white: #FFFFFF;
+  --text-light: #FFFFFF;
 }
 
 * {
@@ -41,17 +42,18 @@ body {
   height: 1080px;
   overflow: hidden;
   font-family: 'D-DINCondensed', 'MicrogrammaD', 'AmericanCaptain', sans-serif;
-  background: linear-gradient(180deg, var(--bg-light), var(--bg-dark));
+  position: relative;
+  background: linear-gradient(180deg, #170000 0%, #050000 100%);
 }
 
-/* 🔴 TICKER */
+/* Ticker Tape */
 .ticker-tape {
   position: fixed;
   width: 100%;
   height: 80px;
   background: linear-gradient(90deg, #8B0000, #E10600, #FF2A2A, #E10600, #8B0000);
   background-size: 400% 400%;
-  animation: redGradientShift 3s ease infinite;
+  animation: goldGradientShift 3s ease infinite;
   overflow: hidden;
   z-index: 10;
   border: 4px solid rgba(255,255,255,0.15);
@@ -59,29 +61,31 @@ body {
   opacity: 0;
 }
 
-@keyframes redGradientShift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
 .top-ticker {
   top: 0;
+  border-bottom: 6px solid rgba(255,255,255,0.15);
   animation: tickerSlideDown 0.8s ease-out forwards;
 }
 
 .bottom-ticker {
   bottom: 0;
+  border-top: 6px solid rgba(255,255,255,0.15);
   animation: tickerSlideUp 0.8s ease-out forwards;
 }
 
 @keyframes tickerSlideDown {
-  from { opacity: 0; transform: translateY(-100%); }
-  to { opacity: 1; transform: translateY(0); }
+  0% { opacity: 0; transform: translateY(-100%); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes tickerSlideUp {
-  from { opacity: 0; transform: translateY(100%); }
-  to { opacity: 1; transform: translateY(0); }
+  0% { opacity: 0; transform: translateY(100%); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes goldGradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 .ticker-content {
@@ -98,15 +102,16 @@ body {
 }
 
 .ticker-content span {
-  font-family: 'ODIN', 'AmericanCaptain';
+  font-family: 'ODIN', 'AmericanCaptain', sans-serif;
   font-size: 48px;
   font-weight: 900;
   color: #FFFFFF;
   margin-right: 100px;
   letter-spacing: 6px;
+  text-transform: uppercase;
 }
 
-/* MAIN */
+/* Main Container */
 .main-container {
   position: relative;
   width: 100%;
@@ -115,31 +120,60 @@ body {
   align-items: center;
   justify-content: center;
   padding: 120px 40px;
+  z-index: 5;
   opacity: 0;
   transform: scale(0.95);
   animation: containerFadeIn 1s ease-out 0.5s forwards;
 }
 
 @keyframes containerFadeIn {
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  0% { opacity: 0; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
-/* TEAM CENTER */
+/* Players Section */
+.players-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 1800px;
+}
+
+/* Team Section */
+.team-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+  opacity: 0;
+  transform: scale(0.8) rotate(-5deg);
+  animation: teamLogoReveal 0.8s ease-out 1.5s forwards;
+}
+
+@keyframes teamLogoReveal {
+  0% { opacity: 0; transform: scale(0.8) rotate(-5deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
 .team-logo-container {
   width: 400px;
   height: 400px;
   border-radius: 20px;
-  background: linear-gradient(135deg, var(--bg-light), var(--bg-dark));
-  border: 5px solid var(--red-main);
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.8),
-    0 0 30px rgba(255, 0, 0, 0.35);
+  background: linear-gradient(135deg,#170000,#050000);
+  border: 6px solid #E10600;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.8), 0 0 30px rgba(255,0,0,0.35);
+  overflow: hidden;
+  animation: logoBorderPulse 2s ease infinite;
+}
+
+@keyframes logoBorderPulse {
+  0%,100% { border-color:#E10600; }
+  50% { border-color:#FF2A2A; }
 }
 
 #team-logo {
@@ -150,60 +184,61 @@ body {
   padding: 20px;
 }
 
-/* TEAM NAME */
 .team-name {
+  font-family: 'MicrogrammaD', 'ODIN', sans-serif;
   font-size: 44px;
   font-weight: 900;
-  color: var(--white);
+  color: #FFFFFF;
   letter-spacing: 4px;
   margin-top: 15px;
   text-align: center;
-  text-shadow: 0 0 12px rgba(255,0,0,0.3);
 }
 
-/* PLAYER CARD */
+/* Player Cards */
 .player-card {
-  background: linear-gradient(135deg, var(--bg-light), var(--bg-dark));
-  border: 2px solid var(--red-main);
-  border-radius: 16px;
-  padding: 30px 20px;
-  width: 250px;
-  height: 500px;
-  box-shadow:
-    0 8px 25px rgba(0, 0, 0, 0.7),
-    0 0 18px rgba(255,0,0,0.15);
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: linear-gradient(135deg,#170000,#050000);
+  border: 4px solid #E10600;
+  border-radius: 16px;
+  padding: 30px 20px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.7);
+  width: 250px;
+  height: 500px;
 }
 
-/* IMAGE */
+.player-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(90deg,#E10600,#FF2A2A);
+}
+
 .character-image {
   width: 160px;
   height: 350px;
   border-radius: 12px;
   background: #000;
-  border: 2px solid var(--red-main);
+  border: 3px solid #FF2A2A;
 }
 
-/* NAME */
 .player-name {
   font-size: 24px;
   font-weight: 700;
-  color: var(--white);
+  color: #FFFFFF;
   text-align: center;
 }
 
-/* FINISHES */
 .finishes-text {
   font-size: 20px;
-  color: var(--white);
+  color: #FFFFFF;
 }
 
-/* KILLS */
 .kill-count {
   font-size: 32px;
   font-weight: 900;
-  color: var(--red-bright);
-  margin-left: 8px;
+  color: #FF2A2A;
 }
