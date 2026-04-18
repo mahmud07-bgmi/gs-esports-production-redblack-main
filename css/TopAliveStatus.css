@@ -7,17 +7,30 @@
   font-style: normal;
 }
 
+:root {
+  --bg-dark: #050000;
+  --bg-light: #170000;
+  --red-main: #E10600;
+  --red-bright: #FF2A2A;
+  --red-soft: rgba(255, 0, 0, 0.18);
+  --white: #FFFFFF;
+  --text-soft: #E5E5E5;
+  --border-soft: rgba(255,255,255,0.14);
+}
+
 body, .top-alive-status, .team-card, .team-info, .team-name, .team-finishes, .team-alive-section, .top-alive-label, .wwcd-percentage, .wwcd-label, .wwcd-value {
   font-family: 'Gonstet', 'Montserrat', Arial, sans-serif !important;
 }
 
 .top-alive-status {
-  background: rgba(8, 15, 30, 0.88);
-  border: 1px solid rgba(34, 211, 238, 0.25);
+  background: rgba(20, 0, 0, 0.88);
+  border: 1px solid rgba(255,255,255,0.10);
   border-radius: 12px;
   padding: 16px;
   margin: 16px 0;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.28);
+  box-shadow:
+    0 8px 24px rgba(0,0,0,0.35),
+    0 0 18px rgba(255,0,0,0.12);
   backdrop-filter: blur(6px);
 }
 
@@ -46,10 +59,12 @@ body, .top-alive-status, .team-card, .team-info, .team-name, .team-finishes, .te
 }
 
 .team-card {
-  background: linear-gradient(135deg, #101a33 0%, #0b1224 100%);
+  background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-dark) 100%);
   border-radius: 14px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
-  border: 2px solid #22D3EE;
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.4),
+    0 0 14px rgba(255, 0, 0, 0.15);
+  border: 1px solid var(--border-soft);
   padding: 12px 10px 10px 10px;
   display: flex;
   flex-direction: row;
@@ -59,10 +74,24 @@ body, .top-alive-status, .team-card, .team-info, .team-name, .team-finishes, .te
   position: relative;
   transition: box-shadow 0.3s, transform 0.3s, opacity 0.4s;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.team-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--red-main), transparent);
+  z-index: 2;
 }
 
 .team-card:hover {
-  box-shadow: 0 10px 32px rgba(34, 211, 238, 0.22);
+  box-shadow:
+    0 10px 32px rgba(255, 0, 0, 0.22),
+    0 0 16px rgba(255, 0, 0, 0.18);
 }
 
 .team-card.eliminating {
@@ -76,13 +105,13 @@ body, .top-alive-status, .team-card, .team-info, .team-name, .team-finishes, .te
   position: absolute;
   top: 6px;
   left: 6px;
-  background: linear-gradient(135deg, #FFD700 0%, #F59E0B 100%);
-  color: #111827;
+  background: linear-gradient(135deg, #8B0000 0%, #E10600 100%);
+  color: var(--white);
   font-weight: 900;
   font-size: 1.6rem;
   border-radius: 8px;
   padding: 6px 18px;
-  box-shadow: 0 2px 10px rgba(255, 215, 0, 0.35);
+  box-shadow: 0 2px 10px rgba(255, 0, 0, 0.28);
   z-index: 2;
   letter-spacing: 1px;
 }
@@ -95,8 +124,8 @@ body, .top-alive-status, .team-card, .team-info, .team-name, .team-finishes, .te
   margin-right: 18px;
   margin-left: 8px;
   background: rgba(255,255,255,0.04);
-  border: 2px solid rgba(34, 211, 238, 0.35);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255,255,255,0.16);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
   flex-shrink: 0;
 }
 
@@ -111,7 +140,7 @@ body, .top-alive-status, .team-card, .team-info, .team-name, .team-finishes, .te
 .team-name {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #F8FAFC;
+  color: var(--white);
   margin-bottom: 10px;
   text-align: left;
   line-height: 1.1;
@@ -121,10 +150,10 @@ body, .top-alive-status, .team-card, .team-info, .team-name, .team-finishes, .te
 .team-finishes {
   font-size: 1.4rem;
   font-weight: 800;
-  color: #FFD700;
+  color: var(--red-bright);
   margin-bottom: 10px;
   text-align: left;
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.18);
+  text-shadow: 0 0 10px rgba(255, 0, 0, 0.22);
 }
 
 .team-alive-section {
@@ -138,7 +167,7 @@ body, .top-alive-status, .team-card, .team-info, .team-name, .team-finishes, .te
 .top-alive-label {
   font-size: 1.1rem;
   font-weight: bold;
-  color: #22D3EE;
+  color: var(--white);
   margin-right: 4px;
 }
 
@@ -156,14 +185,14 @@ body, .top-alive-status, .team-card, .team-info, .team-name, .team-finishes, .te
   height: 30px;
   background: url('../assets/helmet.png') no-repeat center center;
   background-size: contain;
-  filter: brightness(1.35) saturate(2.2) hue-rotate(155deg) contrast(1.15);
+  filter: brightness(0.95) saturate(2.4) hue-rotate(-20deg) contrast(1.1);
   opacity: 1;
   transition: all 0.3s ease;
 }
 
 .top-alive-rect-bar.dead {
-  filter: grayscale(1) brightness(0.42) contrast(0.9);
-  opacity: 0.55;
+  filter: grayscale(1) brightness(0.38) contrast(0.9);
+  opacity: 0.5;
 }
 
 /* WWCD Percentage Rectangle */
@@ -172,14 +201,14 @@ body, .top-alive-status, .team-card, .team-info, .team-name, .team-finishes, .te
   bottom: -25px;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(135deg, #0EA5E9 0%, #2563EB 100%);
-  border: 2px solid #22D3EE;
+  background: linear-gradient(135deg, #8B0000 0%, #E10600 100%);
+  border: 1px solid rgba(255,255,255,0.16);
   border-radius: 10px;
   padding: 4px 12px;
   display: flex;
   align-items: center;
   gap: 6px;
-  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.32);
+  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.28);
   min-width: 80px;
   justify-content: center;
 }
@@ -187,13 +216,13 @@ body, .top-alive-status, .team-card, .team-info, .team-name, .team-finishes, .te
 .wwcd-label {
   font-size: 0.9rem;
   font-weight: 700;
-  color: #FFFFFF;
+  color: var(--white);
   letter-spacing: 0.5px;
 }
 
 .wwcd-value {
   font-size: 1.1rem;
   font-weight: 900;
-  color: #FFD700;
+  color: var(--white);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }
