@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+@font-face {
+  font-family: 'Gonstet';
+  src: url('../font/gonstet.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body, .table-alive, .alive-rectangles, .table-alive th, .table-alive td {
+  font-family: 'Gonstet', 'Montserrat', Arial, sans-serif !important;
+}
+
+/* 🔵 Blue Zone Blink Effect */
+@keyframes blink-blue-bg {
+  0%, 100% { background-color: inherit; }
+  50% { background-color: rgba(37, 99, 235, 0.25); }
+}
+
+tr.bluezone-blink {
+  animation: blink-blue-bg 1s linear infinite !important;
+}
+
+/* 🔥 MAIN TABLE */
+.table-alive {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 440px;
+  margin: 40px auto;
+  background: linear-gradient(180deg, #0B1E3A 0%, #0A1630 100%);
+  color: #E5E7EB;
+  font-size: 18px;
+  overflow: hidden;
+  border: 2px solid #FFD700;
+  box-shadow: 0 0 20px rgba(0, 102, 255, 0.4);
+  position: relative;
+}
+
+/* 🔷 HEADER */
+.table-alive thead tr {
+  background: linear-gradient(90deg, #1E3A8A 0%, #2563EB 100%);
+  height: 48px;
+}
+
+.table-alive th {
+  color: #FFFFFF;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border: none;
+  padding: 0;
+  vertical-align: middle;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.table-alive th.team {
+  text-align: left;
+  padding-left: 16px;
+}
+
+/* 🧊 ROWS */
+.table-alive tbody tr {
+  height: 50px;
+  background: rgba(255, 255, 255, 0.02);
+  transition: background 0.3s;
+}
+
+.table-alive tbody tr:nth-child(even) {
+  background: rgba(37, 99, 235, 0.08);
+}
+
+.table-alive tbody tr:hover {
+  background: rgba(59, 130, 246, 0.15);
+}
+
+/* 🔤 TEXT */
+.table-alive td {
+  text-align: center;
+  font-weight: 600;
+  border: none;
+  background: none;
+  z-index: 2;
+  position: relative;
+  padding: 0;
+  vertical-align: middle;
+  color: #FFD700;
+  height: 50px;
+  white-space: nowrap;
+}
+
+/* 👥 TEAM COLUMN */
+.table-alive td.team {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 12px;
+  padding-right: 12px;
+  text-align: left;
+  color: #FFFFFF;
+  height: 50px;
+  overflow: hidden;
+}
+
+.table-alive td.team img {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  object-fit: contain;
+  background: #0F172A;
+  border: 2px solid #FFD700;
+  flex-shrink: 0;
+}
+
+.table-alive td.team span {
+  display: inline-block;
+  max-width: 95px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 🟦 ALIVE BARS */
+.alive-rectangles {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  position: relative;
+  padding: 0 8px;
+}
+
+.alive-rect-bar {
+  width: 5px;
+  height: 30px;
+  background: linear-gradient(180deg, #3B82F6, #1D4ED8);
+  border: 1px solid #1E40AF;
+}
+
+.alive-rect-bar.dead {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* ❌ STRIKE LINE */
+.alive-rect-strike {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 0;
+  border-top: 3px solid #FFD700;
+  z-index: 2;
+}
+
+/* 🌌 BODY */
+body {
+  background: transparent;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* 🎬 SLIDE ANIMATION */
+.table-container {
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: transform 0.8s ease-in-out;
+}
+
+.slide-in {
+  transform: translateX(0);
+}
+
+.slide-out {
+  transform: translateX(500px);
+}
+
+/* ⚠️ STATES */
+#loading, #error, #nodata {
+  color: #FFFFFF;
+  text-align: center;
+  margin-top: 40px;
+  font-size: 22px;
+}
