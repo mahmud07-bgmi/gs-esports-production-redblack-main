@@ -30,7 +30,9 @@ body,
 .table-alive,
 .alive-rectangles,
 .table-alive th,
-.table-alive td {
+.table-alive td,
+.alive-legend,
+.alive-legend-item {
   font-family: 'Gonstet', 'Montserrat', Arial, sans-serif !important;
 }
 
@@ -53,7 +55,7 @@ tr.bluezone-blink {
   border-collapse: separate;
   border-spacing: 0;
   width: 440px;
-  margin: 40px auto;
+  margin: 40px auto 0 auto;
   background: linear-gradient(180deg, var(--bg-main) 0%, var(--bg-dark) 100%);
   color: var(--accent-soft);
   font-size: 18px;
@@ -63,7 +65,7 @@ tr.bluezone-blink {
     0 0 18px var(--glow-red),
     inset 0 0 20px rgba(255,255,255,0.03);
   position: relative;
-  border-radius: 14px;
+  border-radius: 14px 14px 0 0;
 }
 
 /* HEADER */
@@ -156,11 +158,11 @@ tr.bluezone-blink {
 .alive-rectangles {
   display: flex;
   gap: 3px;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   height: 30px;
   position: relative;
-  padding: 0 8px;
+  padding: 0 10px 4px 10px;
 }
 
 .alive-rect-bar {
@@ -178,16 +180,63 @@ tr.bluezone-blink {
   box-shadow: none;
 }
 
-/* STRIKE LINE */
+/* STRIKE LINE - NICHE FIXED */
 .alive-rect-strike {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
+  left: -18px;
+  right: -18px;
+  bottom: 2px;
   height: 0;
   border-top: 3px solid var(--accent-white);
-  z-index: 2;
-  opacity: 0.9;
+  z-index: 3;
+  opacity: 0.95;
+  pointer-events: none;
+}
+
+/* BOTTOM LEGEND */
+.alive-legend {
+  width: 440px;
+  margin: 0 auto;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 58px;
+  background: linear-gradient(180deg, #150000 0%, #0b0000 100%);
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top: none;
+  border-radius: 0 0 14px 14px;
+  box-shadow:
+    0 10px 18px rgba(255, 0, 0, 0.12),
+    inset 0 0 16px rgba(255,255,255,0.03);
+}
+
+.alive-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #FFFFFF;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.alive-legend-box {
+  width: 24px;
+  height: 24px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.alive-legend-box.alive {
+  background: linear-gradient(180deg, #FF2E2E 0%, #C00000 100%);
+  box-shadow: 0 0 8px rgba(255, 0, 0, 0.35);
+}
+
+.alive-legend-box.eliminated {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.08);
 }
 
 /* BODY */
