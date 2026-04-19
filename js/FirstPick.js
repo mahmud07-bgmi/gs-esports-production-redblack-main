@@ -1,9 +1,14 @@
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1gyzPFtG3ubxzrqGEtQI-dr4aiExDU6Fx0tzFS2W4iG8/';
 const SHEET_GID = '692081236';
 const REFRESH_EVERY = 2000;
+const DISPLAY_DURATION = 5000;
 
-/* CHARACTER IMAGE CODE SE */
+/* character code se */
 const CHARACTER_IMAGE = "assets/c2.png";
+
+let lastShowState = false;
+let hideTimer = null;
+let isAnimating = false;
 
 function getGvizUrl(sheetUrl, gid) {
   const match = sheetUrl.match(/\/d\/([a-zA-Z0-9-_]+)/);
@@ -31,24 +36,58 @@ function toBool(value) {
   return value === true || value === 'TRUE' || value === 'true' || value === 1 || value === '1';
 }
 
-function updateOverlay(data) {
+function showOverlay(data) {
   const overlay = document.getElementById('first-pick-overlay');
   const playerName = document.getElementById('playerName');
   const characterImg = document.getElementById('characterImg');
 
-  if (!data || !toBool(data.show_pick)) {
-    overlay.style.display = 'none';
-    return;
-  }
+  if (!overlay || isAnimating) return;
 
   playerName.textContent = data.player_name || "PLAYER NAME";
-
   characterImg.src = CHARACTER_IMAGE;
   characterImg.onerror = function () {
     this.src = 'assets/c2.png';
   };
 
-  overlay.style.display = 'block';
+  overlay.classList.remove('hide');
+  overlay.classList.add('show');
+  overlay.style.visibility = 'visible';
+  overlay.style.opacity = '1';
+
+  isAnimating = true;
+
+  clearTimeout(hideTimer);
+  hideTimer = setTimeout(() => {
+    hideOverlay();
+  }, DISPLAY_DURATION);
+
+  setTimeout(() => {
+    isAnimating = false;
+  }, 800);
+}
+
+function hideOverlay() {
+  const overlay = document.getElementById('first-pick-overlay');
+  if (!overlay) return;
+
+  overlay.classList.remove('show');
+  overlay.classList.add('hide');
+
+  setTimeout(() => {
+    overlay.style.opacity = '0';
+    overlay.style.visibility = 'hidden';
+    overlay.classList.remove('hide');
+  }, 450);
+}
+
+function updateOverlay(data) {
+  const currentShow = !!(data && toBool(data.show_pick));
+
+  if (currentShow && !lastShowState) {
+    showOverlay(data);
+  }
+
+  lastShowState = currentShow;
 }
 
 function fetchData() {
