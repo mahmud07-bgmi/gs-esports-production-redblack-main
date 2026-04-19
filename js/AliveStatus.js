@@ -90,7 +90,7 @@ function renderTable(table, shouldShow) {
           <th class="team" style="width: 160px;">TEAM NAME</th>
           <th style="width: 70px;">ALIVE</th>
           <th style="width: 60px;">FIN</th>
-          <th style="width: 80px;">TOT. PTS</th>
+          <th style="width: 80px;">TP</th>
         </tr>
       </thead>
       <tbody>
