@@ -180,14 +180,14 @@ tr.bluezone-blink {
   box-shadow: none;
 }
 
-/* STRIKE LINE - NICHE FIXED */
+/* STRIKE LINE - PERFECT FIX */
 .alive-rect-strike {
   position: absolute;
-  left: -18px;
-  right: -18px;
-  bottom: 2px;
-  height: 0;
-  border-top: 3px solid var(--accent-white);
+  width: 32px;              /* sirf bars ke width jitna */
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 4px;              /* bars ke niche fixed */
+  border-top: 3px solid #ffffff;
   z-index: 3;
   opacity: 0.95;
   pointer-events: none;
