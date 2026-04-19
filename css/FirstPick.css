@@ -150,11 +150,11 @@ body {
 /* character */
 .character-wrap {
   position: absolute;
-  left: 18px;
-  top: -102px;
+  left: 60px;   /* 🔥 right shift (18 → 60) */
+  top: -135px;  /* 🔥 thoda upar (-102 → -135) */
   width: 410px;
   height: 470px;
-  z-index: 3; /* name bar se niche */
+  z-index: 3;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -173,8 +173,8 @@ body {
 /* bottom red bar */
 .name-bar {
   position: absolute;
-  left: 100;
-  top: 273px; 
+  left: 40px;   /* 🔥 right shift (0 → 40) */
+  top: 273px;
   width: 1110px;
   height: 96px;
   background: linear-gradient(180deg, #ff1414 0%, #db0000 100%);
