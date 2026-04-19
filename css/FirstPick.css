@@ -26,126 +26,170 @@ body {
   position: relative;
   width: 1920px;
   height: 1080px;
-}
-
-/* MAIN AREA */
-.pick-main-bar {
-  position: absolute;
-  left: 110px;
-  top: 240px;
-  width: 1650px;
-  height: 460px;
-}
-
-/* TOP DARK BAR */
-.pick-title-wrap {
-  position: absolute;
-  left: 230px;
-  top: 35px;
-  width: 1420px;
-  height: 250px;
-  background: linear-gradient(90deg, #260000 0%, #5a0000 45%, #330000 100%);
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: 120px;
-  overflow: hidden;
-  z-index: 2;
-  box-shadow:
-    0 12px 28px rgba(0, 0, 0, 0.35),
-    0 0 18px rgba(255, 0, 0, 0.10);
-}
-
-.pick-title-wrap::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,0.08) 0%,
-      rgba(255,255,255,0.02) 38%,
-      rgba(0,0,0,0.12) 100%
-    );
+  opacity: 0;
+  visibility: hidden;
   pointer-events: none;
 }
 
-.pick-title-wrap::after {
-  content: "";
+.first-pick-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.pick-main-bar {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    #ff1a1a 35%,
-    #ff5757 50%,
-    #ff1a1a 65%,
-    transparent 100%
-  );
-  box-shadow: 0 0 16px rgba(255, 0, 0, 0.45);
+  left: 110px;
+  top: 220px;
+  width: 1500px;
+  height: 520px;
+}
+
+/* animation */
+.pick-title-wrap,
+.name-bar,
+.character-wrap {
+  will-change: transform, opacity;
+}
+
+.first-pick-overlay.show .pick-title-wrap {
+  animation: slideFromLeft 0.55s ease-out forwards;
+}
+
+.first-pick-overlay.show .name-bar {
+  animation: slideFromLeft 0.65s ease-out forwards;
+}
+
+.first-pick-overlay.show .character-wrap {
+  animation: slideFromLeftCharacter 0.7s ease-out forwards;
+}
+
+.first-pick-overlay.hide .pick-title-wrap {
+  animation: slideOutLeft 0.4s ease-in forwards;
+}
+
+.first-pick-overlay.hide .name-bar {
+  animation: slideOutLeft 0.35s ease-in forwards;
+}
+
+.first-pick-overlay.hide .character-wrap {
+  animation: slideOutLeftCharacter 0.4s ease-in forwards;
+}
+
+@keyframes slideFromLeft {
+  0% {
+    transform: translateX(-240px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideFromLeftCharacter {
+  0% {
+    transform: translateX(-260px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutLeft {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-180px);
+    opacity: 0;
+  }
+}
+
+@keyframes slideOutLeftCharacter {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-200px);
+    opacity: 0;
+  }
+}
+
+/* top dark bar */
+.pick-title-wrap {
+  position: absolute;
+  left: 170px;
+  top: 40px;
+  width: 1295px;
+  height: 230px;
+  background: linear-gradient(90deg, #330000 0%, #5b0000 50%, #2a0000 100%);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 110px;
+  overflow: hidden;
+  z-index: 2;
+  opacity: 0;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
 }
 
 .pick-title {
-  position: relative;
-  z-index: 2;
   font-family: 'AmericanCaptain', 'D-DINCondensed', sans-serif;
-  font-size: 138px;
+  font-size: 132px;
   line-height: 1;
   color: #ffffff;
-  letter-spacing: 6px;
+  letter-spacing: 5px;
   text-transform: uppercase;
-  text-shadow:
-    0 4px 10px rgba(0,0,0,0.32),
-    0 0 14px rgba(255,0,0,0.12);
+  text-shadow: 0 4px 10px rgba(0,0,0,0.32);
 }
 
-/* CHARACTER - NAME BAR KE NICHE RAHEGA */
+/* character */
 .character-wrap {
   position: absolute;
-  left: 35px;
-  top: -155px;
-  width: 560px;
-  height: 520px;
-  z-index: 4; /* name-bar se niche */
+  left: 0;
+  top: -110px;
+  width: 430px;
+  height: 470px;
+  z-index: 5;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   pointer-events: none;
+  opacity: 0;
 }
 
 .character-img {
-  height: 100%;
   max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
   display: block;
-  transform: scale(1.12);
-  filter: drop-shadow(0 16px 26px rgba(0,0,0,0.52));
+  filter: drop-shadow(0 14px 24px rgba(0,0,0,0.45));
 }
 
-/* RED NAME BAR - CHARACTER KE UPAR */
+/* bottom red bar */
 .name-bar {
   position: absolute;
   left: 0;
-  top: 305px;
-  width: 1200px;
+  top: 310px;
+  width: 1080px;
   height: 96px;
-  background: linear-gradient(180deg, #ff1d1d 0%, #d80000 100%);
-  clip-path: polygon(0 0, 100% 0, 91% 100%, 0% 100%);
+  background: linear-gradient(180deg, #ff1414 0%, #db0000 100%);
+  clip-path: polygon(0 0, 100% 0, 90% 100%, 0% 100%);
   display: flex;
   align-items: center;
-  padding-left: 175px;
-  z-index: 8; /* character se upar */
-  box-shadow:
-    0 8px 20px rgba(0,0,0,0.25),
-    0 0 18px rgba(255,0,0,0.16);
+  padding-left: 165px;
+  z-index: 4;
+  opacity: 0;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.22);
 }
 
 .player-name {
   font-family: 'AmericanCaptain', 'D-DINCondensed', sans-serif;
-  font-size: 82px;
+  font-size: 88px;
   line-height: 1;
   color: #ffffff;
   letter-spacing: 2px;
@@ -153,11 +197,6 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 860px;
+  max-width: 760px;
   text-shadow: 0 3px 8px rgba(0,0,0,0.25);
-}
-
-/* OPTIONAL SMOOTH APPEAR */
-.first-pick-overlay.show {
-  display: block !important;
 }
