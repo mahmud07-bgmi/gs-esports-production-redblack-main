@@ -1,206 +1,279 @@
-// CONFIG: Set your Google Sheet URL here (published to web, not private)
-const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1gyzPFtG3ubxzrqGEtQI-dr4aiExDU6Fx0tzFS2W4iG8/';
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
-function getGvizUrl(sheetUrl) {
-  const match = sheetUrl.match(/\/d\/([a-zA-Z0-9-_]+)/);
-  if (!match) return null;
-  const sheetId = match[1];
-  return `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
+@font-face {
+  font-family: 'Gonstet';
+  src: url('../font/gonstet.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }
 
-function parseGvizTable(json) {
-  if (!json.table) return { headers: [], rows: [] };
-  const headers = json.table.cols.map(col => col.label);
-  const rows = json.table.rows.map(row =>
-    row.c.map(cell => (cell ? cell.v : ''))
-  );
-  return { headers, rows };
+:root {
+  --bg-main: #140000;
+  --bg-dark: #090000;
+  --row-dark: rgba(255, 255, 255, 0.03);
+  --row-light: rgba(255, 0, 0, 0.08);
+  --row-hover: rgba(255, 60, 60, 0.16);
+
+  --header-1: #8B0000;
+  --header-2: #D10000;
+
+  --accent-red: #E10600;
+  --accent-red-2: #FF2A2A;
+  --accent-white: #FFFFFF;
+  --accent-soft: #F3F3F3;
+
+  --border-soft: rgba(255,255,255,0.16);
+  --glow-red: rgba(255, 0, 0, 0.35);
 }
 
-function createAliveRectangles(count) {
-  const total = 4;
-  const isEliminated = count === 0;
-  let html = '<div class="alive-rectangles">';
+body,
+.table-alive,
+.alive-rectangles,
+.table-alive th,
+.table-alive td,
+.alive-legend,
+.alive-legend-item {
+  font-family: 'Gonstet', 'Montserrat', Arial, sans-serif !important;
+}
 
-  for (let i = 0; i < total; i++) {
-    html += `<div class="alive-rect-bar${i >= count ? ' dead' : ''}"></div>`;
+/* RED ALERT / BLUEZONE BLINK */
+@keyframes blink-blue-bg {
+  0%, 100% {
+    background-color: inherit;
   }
-
-  if (isEliminated) {
-    html += '<div class="alive-rect-strike"></div>';
+  50% {
+    background-color: rgba(255, 0, 0, 0.22);
   }
-
-  html += '</div>';
-  return html;
 }
 
-function renderTable(table, shouldShow) {
-  const idx = key =>
-    table.headers.findIndex(
-      h => String(h).toLowerCase().replace(/\s/g, '_') === key
-    );
-
-  const srNoIdx = idx('sr_no');
-  const teamNameIdx = idx('team_name');
-  const teamLogoIdx = idx('team_logo');
-  const teamInitialIdx = idx('team_initial');
-  const playersAliveIdx = idx('players_alive');
-  const finishPointsIdx = idx('finish_points');
-  const totalPointsIdx = idx('total_points');
-  const bluezoneIdx = idx('bluezone');
-
-  const validRows = table.rows.filter(row => {
-    const srNo = String(row[srNoIdx] ?? '').trim();
-    const teamName = String(row[teamNameIdx] ?? '').trim();
-    const teamInitial = String(row[teamInitialIdx] ?? '').trim();
-
-    return srNo !== '' && !isNaN(Number(srNo)) && (teamName !== '' || teamInitial !== '');
-  });
-
-  const sortedRows = [...validRows].sort((a, b) => {
-    const aTotal = parseInt(a[totalPointsIdx], 10) || 0;
-    const bTotal = parseInt(b[totalPointsIdx], 10) || 0;
-    if (bTotal !== aTotal) return bTotal - aTotal;
-
-    const aFinish = parseInt(a[finishPointsIdx], 10) || 0;
-    const bFinish = parseInt(b[finishPointsIdx], 10) || 0;
-    if (bFinish !== aFinish) return bFinish - aFinish;
-
-    const aAlive = parseInt(a[playersAliveIdx], 10) || 0;
-    const bAlive = parseInt(b[playersAliveIdx], 10) || 0;
-    if (bAlive !== aAlive) return bAlive - aAlive;
-
-    const aRank = parseInt(a[srNoIdx], 10) || 0;
-    const bRank = parseInt(b[srNoIdx], 10) || 0;
-    return aRank - bRank;
-  });
-
-  const displayRows = sortedRows.map((row, i) => ({
-    rank: i + 1,
-    data: row
-  }));
-
-  let html = `
-    <table class="table-alive">
-      <thead>
-        <tr>
-          <th style="width: 40px;">#</th>
-          <th class="team" style="width: 160px;">TEAM NAME</th>
-          <th style="width: 70px;">ALIVE</th>
-          <th style="width: 60px;">FIN</th>
-          <th style="width: 80px;">TP</th>
-        </tr>
-      </thead>
-      <tbody>
-  `;
-
-  for (let i = 0; i < displayRows.length; i++) {
-    const row = displayRows[i].data;
-    const isBluezone = String(row[bluezoneIdx]).toLowerCase() === 'true';
-
-    html += `<tr${isBluezone ? ' class="bluezone-blink"' : ''}>`;
-    html += `<td>${displayRows[i].rank}</td>`;
-    html += `<td class="team"><img src="${row[teamLogoIdx] || ''}" alt="logo"><span>${row[teamInitialIdx] || row[teamNameIdx] || ''}</span></td>`;
-    html += `<td>${createAliveRectangles(parseInt(row[playersAliveIdx], 10) || 0)}</td>`;
-    html += `<td>${parseInt(row[finishPointsIdx], 10) || 0}</td>`;
-    html += `<td>${parseInt(row[totalPointsIdx], 10) || 0}</td>`;
-    html += `</tr>`;
-  }
-
-  html += `</tbody></table>
-    <div class="alive-legend">
-      <div class="alive-legend-item">
-        <span class="alive-legend-box alive"></span>
-        <span>ALIVE</span>
-      </div>
-      <div class="alive-legend-item">
-        <span class="alive-legend-box eliminated"></span>
-        <span>ELIMINATED</span>
-      </div>
-    </div>`;
-
-  const container = document.getElementById('table-container');
-
-  if (shouldShow) {
-    container.style.display = "block";
-    container.className = "table-container slide-in";
-  } else {
-    container.className = "table-container slide-out";
-    setTimeout(() => {
-      container.style.display = "none";
-    }, 800);
-  }
-
-  container.innerHTML = html;
+tr.bluezone-blink {
+  animation: blink-blue-bg 1s linear infinite !important;
 }
 
-function updateVisibility(table) {
-  if (!table.headers.length || !table.rows.length) return true;
-
-  const idx = key =>
-    table.headers.findIndex(
-      h => String(h).toLowerCase().replace(/\s/g, '_') === key
-    );
-
-  const srNoIdx = idx('sr_no');
-  const teamNameIdx = idx('team_name');
-  const teamInitialIdx = idx('team_initial');
-  const playersAliveIdx = idx('players_alive');
-
-  if (playersAliveIdx === -1) return true;
-
-  const validRows = table.rows.filter(row => {
-    const srNo = String(row[srNoIdx] ?? '').trim();
-    const teamName = String(row[teamNameIdx] ?? '').trim();
-    const teamInitial = String(row[teamInitialIdx] ?? '').trim();
-
-    return srNo !== '' && !isNaN(Number(srNo)) && (teamName !== '' || teamInitial !== '');
-  });
-
-  const teamsWithPlayersAlive = validRows.filter(row => {
-    const aliveCount = parseInt(row[playersAliveIdx], 10) || 0;
-    return aliveCount > 0;
-  }).length;
-
-  return teamsWithPlayersAlive > 4;
+/* MAIN TABLE */
+.table-alive {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 440px;
+  margin: 40px auto 0 auto;
+  background: linear-gradient(180deg, var(--bg-main) 0%, var(--bg-dark) 100%);
+  color: var(--accent-soft);
+  font-size: 18px;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.2);
+  box-shadow:
+    0 0 18px var(--glow-red),
+    inset 0 0 20px rgba(255,255,255,0.03);
+  position: relative;
+  border-radius: 14px 14px 0 0;
 }
 
-// Main logic
-const gvizUrl = getGvizUrl(SHEET_URL);
-let lastTable = { headers: [], rows: [] };
-
-function fetchData() {
-  fetch(gvizUrl)
-    .then(res => res.text())
-    .then(text => {
-      const json = JSON.parse(
-        text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1)
-      );
-
-      lastTable = parseGvizTable(json);
-
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('error').style.display = 'none';
-
-      if (!lastTable.headers.length || !lastTable.rows.length) {
-        document.getElementById('nodata').style.display = '';
-        document.getElementById('table-root').style.display = 'none';
-        return;
-      }
-
-      document.getElementById('nodata').style.display = 'none';
-      document.getElementById('table-root').style.display = '';
-
-      const shouldShow = updateVisibility(lastTable);
-      renderTable(lastTable, shouldShow);
-    })
-    .catch(() => {
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('error').style.display = '';
-      document.getElementById('error').textContent = 'Failed to load data';
-      document.getElementById('table-root').style.display = 'none';
-    });
+/* HEADER */
+.table-alive thead tr {
+  background: linear-gradient(90deg, var(--header-1) 0%, var(--header-2) 100%);
+  height: 48px;
 }
 
-fetchData();
-setInterval(fetchData, 2000);
+.table-alive th {
+  color: var(--accent-white);
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border: none;
+  padding: 0;
+  vertical-align: middle;
+  font-size: 15px;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.table-alive th.team {
+  text-align: left;
+  padding-left: 16px;
+}
+
+/* ROWS */
+.table-alive tbody tr {
+  height: 50px;
+  background: var(--row-dark);
+  transition: background 0.3s ease;
+}
+
+.table-alive tbody tr:nth-child(even) {
+  background: var(--row-light);
+}
+
+.table-alive tbody tr:hover {
+  background: var(--row-hover);
+}
+
+/* TEXT */
+.table-alive td {
+  text-align: center;
+  font-weight: 600;
+  border: none;
+  background: none;
+  z-index: 2;
+  position: relative;
+  padding: 0;
+  vertical-align: middle;
+  color: var(--accent-white);
+  height: 50px;
+  white-space: nowrap;
+}
+
+/* TEAM COLUMN */
+.table-alive td.team {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 12px;
+  padding-right: 12px;
+  text-align: left;
+  color: var(--accent-white);
+  height: 50px;
+  overflow: hidden;
+}
+
+.table-alive td.team img {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  object-fit: contain;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.25);
+  flex-shrink: 0;
+}
+
+.table-alive td.team span {
+  display: inline-block;
+  max-width: 95px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--accent-white);
+}
+
+/* ALIVE CELL */
+.table-alive td:nth-child(3) {
+  text-align: center;
+}
+
+/* ALIVE BARS */
+.alive-rectangles {
+  display: inline-flex;
+  gap: 3px;
+  align-items: flex-end;
+  justify-content: center;
+  width: 35px;
+  height: 30px;
+  position: relative;
+  padding-bottom: 3px;
+}
+
+.alive-rect-bar {
+  width: 5px;
+  height: 30px;
+  background: linear-gradient(180deg, #FF3B3B 0%, #B30000 100%);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 0 6px rgba(255, 0, 0, 0.25);
+  border-radius: 2px;
+}
+
+.alive-rect-bar.dead {
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: none;
+}
+
+.alive-rect-strike {
+  position: absolute;
+  left: -3px;
+  right: -3px;
+  bottom: 4px;
+  border-top: 3px solid #ffffff;
+  z-index: 3;
+  opacity: 0.95;
+  pointer-events: none;
+}
+
+/* BOTTOM LEGEND */
+.alive-legend {
+  width: 440px;
+  margin: 0 auto;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  background: linear-gradient(180deg, #150000 0%, #0b0000 100%);
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top: none;
+  border-radius: 0 0 14px 14px;
+  box-shadow:
+    0 10px 18px rgba(255, 0, 0, 0.12),
+    inset 0 0 16px rgba(255,255,255,0.03);
+}
+
+.alive-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.alive-legend-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.alive-legend-box.alive {
+  background: linear-gradient(180deg, #FF2E2E 0%, #C00000 100%);
+  box-shadow: 0 0 8px rgba(255, 0, 0, 0.35);
+}
+
+.alive-legend-box.eliminated {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* BODY */
+body {
+  background: transparent;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* SLIDE ANIMATION */
+.table-container {
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: transform 0.8s ease-in-out;
+}
+
+.slide-in {
+  transform: translateX(0);
+}
+
+.slide-out {
+  transform: translateX(500px);
+}
+
+/* STATES */
+#loading,
+#error,
+#nodata {
+  color: #FFFFFF;
+  text-align: center;
+  margin-top: 40px;
+  font-size: 22px;
+}
