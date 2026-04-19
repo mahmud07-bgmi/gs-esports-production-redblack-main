@@ -49,7 +49,6 @@ function renderTable(table, shouldShow) {
   const totalPointsIdx = idx('total_points');
   const bluezoneIdx = idx('bluezone');
 
-  // ✅ Only keep valid rows where sr_no exists and team data exists
   const validRows = table.rows.filter(row => {
     const srNo = String(row[srNoIdx] ?? '').trim();
     const teamName = String(row[teamNameIdx] ?? '').trim();
@@ -58,7 +57,6 @@ function renderTable(table, shouldShow) {
     return srNo !== '' && !isNaN(Number(srNo)) && (teamName !== '' || teamInitial !== '');
   });
 
-  // ✅ Sort only valid rows
   const sortedRows = [...validRows].sort((a, b) => {
     const aTotal = parseInt(a[totalPointsIdx], 10) || 0;
     const bTotal = parseInt(b[totalPointsIdx], 10) || 0;
@@ -109,7 +107,17 @@ function renderTable(table, shouldShow) {
     html += `</tr>`;
   }
 
-  html += `</tbody></table>`;
+  html += `</tbody></table>
+    <div class="alive-legend">
+      <div class="alive-legend-item">
+        <span class="alive-legend-box alive"></span>
+        <span>ALIVE</span>
+      </div>
+      <div class="alive-legend-item">
+        <span class="alive-legend-box eliminated"></span>
+        <span>ELIMINATED</span>
+      </div>
+    </div>`;
 
   const container = document.getElementById('table-container');
 
