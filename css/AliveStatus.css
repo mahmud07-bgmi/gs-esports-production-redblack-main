@@ -30,7 +30,8 @@ body,
 .table-alive,
 .alive-rectangles,
 .table-alive th,
-.table-alive td {
+.table-alive td,
+.alive-status-text {
   font-family: 'Gonstet', 'Montserrat', Arial, sans-serif !important;
 }
 
@@ -152,20 +153,30 @@ tr.bluezone-blink {
   color: var(--accent-white);
 }
 
+/* ALIVE WRAPPER */
+.alive-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 38px;
+}
+
 /* ALIVE BARS */
 .alive-rectangles {
   display: flex;
   gap: 3px;
   align-items: center;
   justify-content: center;
-  height: 30px;
+  height: 24px;
   position: relative;
   padding: 0 8px;
 }
 
 .alive-rect-bar {
   width: 5px;
-  height: 30px;
+  height: 24px;
   background: linear-gradient(180deg, #FF3B3B 0%, #B30000 100%);
   border: 1px solid rgba(255,255,255,0.12);
   box-shadow: 0 0 6px rgba(255, 0, 0, 0.25);
@@ -185,9 +196,32 @@ tr.bluezone-blink {
   right: 0;
   top: 50%;
   height: 0;
-  border-top: 3px solid var(--accent-white);
+  border-top: 2px solid var(--accent-white);
   z-index: 2;
-  opacity: 0.9;
+  opacity: 0.95;
+}
+
+/* STATUS TEXT */
+.alive-status-text {
+  font-size: 9px;
+  margin-top: 2px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* ALIVE text uses your red theme */
+.alive-status-text.alive {
+  color: var(--accent-red);
+  text-shadow: 0 0 6px var(--glow-red);
+}
+
+/* ELIMINATED text uses dead/faded theme */
+.alive-status-text.eliminated {
+  color: rgba(255,255,255,0.45);
+  text-shadow: none;
+  opacity: 0.7;
 }
 
 /* BODY */
