@@ -28,29 +28,32 @@ body {
   height: 1080px;
 }
 
-/* MAIN BAR AREA */
+/* MAIN AREA */
 .pick-main-bar {
   position: absolute;
-  left: 120px;
-  top: 255px;
-  width: 1660px;
-  height: 410px;
+  left: 110px;
+  top: 240px;
+  width: 1650px;
+  height: 460px;
 }
 
-/* BIG DARK BAR */
+/* TOP DARK BAR */
 .pick-title-wrap {
   position: absolute;
-  left: 250px;
+  left: 230px;
   top: 35px;
-  width: 1360px;
-  height: 235px;
-  background: linear-gradient(90deg, #220000 0%, #4a0000 45%, #310000 100%);
+  width: 1420px;
+  height: 250px;
+  background: linear-gradient(90deg, #260000 0%, #5a0000 45%, #330000 100%);
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding-right: 110px;
+  padding-right: 120px;
   overflow: hidden;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  z-index: 2;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.35),
+    0 0 18px rgba(255, 0, 0, 0.10);
 }
 
 .pick-title-wrap::before {
@@ -58,7 +61,12 @@ body {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.01) 40%, rgba(0,0,0,0.10) 100%);
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.08) 0%,
+      rgba(255,255,255,0.02) 38%,
+      rgba(0,0,0,0.12) 100%
+    );
   pointer-events: none;
 }
 
@@ -69,32 +77,39 @@ body {
   left: 0;
   width: 100%;
   height: 4px;
-  background: linear-gradient(90deg, transparent 0%, #ff1a1a 35%, #ff4b4b 50%, #ff1a1a 65%, transparent 100%);
-  box-shadow: 0 0 16px rgba(255, 0, 0, 0.4);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #ff1a1a 35%,
+    #ff5757 50%,
+    #ff1a1a 65%,
+    transparent 100%
+  );
+  box-shadow: 0 0 16px rgba(255, 0, 0, 0.45);
 }
 
 .pick-title {
   position: relative;
   z-index: 2;
   font-family: 'AmericanCaptain', 'D-DINCondensed', sans-serif;
-  font-size: 140px;
+  font-size: 138px;
   line-height: 1;
   color: #ffffff;
   letter-spacing: 6px;
   text-transform: uppercase;
   text-shadow:
     0 4px 10px rgba(0,0,0,0.32),
-    0 0 14px rgba(255,0,0,0.14);
+    0 0 14px rgba(255,0,0,0.12);
 }
 
-/* CHARACTER */
+/* CHARACTER - NAME BAR KE NICHE RAHEGA */
 .character-wrap {
   position: absolute;
-  left: 10px;
-  top: -135px;
+  left: 35px;
+  top: -155px;
   width: 560px;
-  height: 455px;
-  z-index: 5;
+  height: 520px;
+  z-index: 4; /* name-bar se niche */
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -110,27 +125,27 @@ body {
   filter: drop-shadow(0 16px 26px rgba(0,0,0,0.52));
 }
 
-/* NAME BAR */
+/* RED NAME BAR - CHARACTER KE UPAR */
 .name-bar {
   position: absolute;
-  left: 140px;
-  top: 560px;
-  width: 1180px;
-  height: 92px;
-  background: linear-gradient(180deg, #ff1414 0%, #d00000 100%);
+  left: 0;
+  top: 305px;
+  width: 1200px;
+  height: 96px;
+  background: linear-gradient(180deg, #ff1d1d 0%, #d80000 100%);
   clip-path: polygon(0 0, 100% 0, 91% 100%, 0% 100%);
   display: flex;
   align-items: center;
-  padding-left: 210px;
-  z-index: 4;
+  padding-left: 175px;
+  z-index: 8; /* character se upar */
   box-shadow:
     0 8px 20px rgba(0,0,0,0.25),
-    0 0 18px rgba(255,0,0,0.14);
+    0 0 18px rgba(255,0,0,0.16);
 }
 
 .player-name {
   font-family: 'AmericanCaptain', 'D-DINCondensed', sans-serif;
-  font-size: 86px;
+  font-size: 82px;
   line-height: 1;
   color: #ffffff;
   letter-spacing: 2px;
@@ -138,6 +153,11 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 900px;
+  max-width: 860px;
   text-shadow: 0 3px 8px rgba(0,0,0,0.25);
+}
+
+/* OPTIONAL SMOOTH APPEAR */
+.first-pick-overlay.show {
+  display: block !important;
 }
