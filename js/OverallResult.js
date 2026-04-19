@@ -2,7 +2,7 @@ google.charts.load('current', { packages: ['corechart'] });
 google.charts.setOnLoadCallback(init);
 
 const sheetId = '1gyzPFtG3ubxzrqGEtQI-dr4aiExDU6Fx0tzFS2W4iG8';
-const gid = '992722997'; // overall_result tab
+const gid = '1932659852'; // overall_result tab
 const refreshEvery = 2000;
 
 let currentShowState = false;
