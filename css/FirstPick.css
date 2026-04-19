@@ -1,0 +1,143 @@
+@font-face {
+  font-family: 'AmericanCaptain';
+  src: url('../font/American Captain Patrius 02 FRE.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'D-DINCondensed';
+  src: url('../font/D-DINCondensed.otf') format('opentype');
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: transparent;
+  font-family: 'D-DINCondensed', sans-serif;
+}
+
+.first-pick-overlay {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+}
+
+/* MAIN BAR AREA */
+.pick-main-bar {
+  position: absolute;
+  left: 120px;
+  top: 255px;
+  width: 1660px;
+  height: 410px;
+}
+
+/* BIG DARK BAR */
+.pick-title-wrap {
+  position: absolute;
+  left: 250px;
+  top: 35px;
+  width: 1360px;
+  height: 235px;
+  background: linear-gradient(90deg, #220000 0%, #4a0000 45%, #310000 100%);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 110px;
+  overflow: hidden;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+.pick-title-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.01) 40%, rgba(0,0,0,0.10) 100%);
+  pointer-events: none;
+}
+
+.pick-title-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent 0%, #ff1a1a 35%, #ff4b4b 50%, #ff1a1a 65%, transparent 100%);
+  box-shadow: 0 0 16px rgba(255, 0, 0, 0.4);
+}
+
+.pick-title {
+  position: relative;
+  z-index: 2;
+  font-family: 'AmericanCaptain', 'D-DINCondensed', sans-serif;
+  font-size: 140px;
+  line-height: 1;
+  color: #ffffff;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  text-shadow:
+    0 4px 10px rgba(0,0,0,0.32),
+    0 0 14px rgba(255,0,0,0.14);
+}
+
+/* CHARACTER */
+.character-wrap {
+  position: absolute;
+  left: 10px;
+  top: -135px;
+  width: 560px;
+  height: 455px;
+  z-index: 5;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.character-img {
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+  transform: scale(1.12);
+  filter: drop-shadow(0 16px 26px rgba(0,0,0,0.52));
+}
+
+/* NAME BAR */
+.name-bar {
+  position: absolute;
+  left: 140px;
+  top: 560px;
+  width: 1180px;
+  height: 92px;
+  background: linear-gradient(180deg, #ff1414 0%, #d00000 100%);
+  clip-path: polygon(0 0, 100% 0, 91% 100%, 0% 100%);
+  display: flex;
+  align-items: center;
+  padding-left: 210px;
+  z-index: 4;
+  box-shadow:
+    0 8px 20px rgba(0,0,0,0.25),
+    0 0 18px rgba(255,0,0,0.14);
+}
+
+.player-name {
+  font-family: 'AmericanCaptain', 'D-DINCondensed', sans-serif;
+  font-size: 86px;
+  line-height: 1;
+  color: #ffffff;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 900px;
+  text-shadow: 0 3px 8px rgba(0,0,0,0.25);
+}
