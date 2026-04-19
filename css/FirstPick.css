@@ -174,7 +174,7 @@ body {
 .name-bar {
   position: absolute;
   left: 0;
-  top: 320px;
+  top: 270px; 
   width: 1110px;
   height: 96px;
   background: linear-gradient(180deg, #ff1414 0%, #db0000 100%);
@@ -182,7 +182,7 @@ body {
   display: flex;
   align-items: center;
   padding-left: 185px;
-  z-index: 8; /* character ke upar */
+  z-index: 8;
   opacity: 0;
   box-shadow: 0 8px 20px rgba(0,0,0,0.22);
 }
