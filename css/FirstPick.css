@@ -39,7 +39,7 @@ body {
 .pick-main-bar {
   position: absolute;
   left: 110px;
-  top: 220px;
+  top: 215px;
   width: 1500px;
   height: 520px;
 }
@@ -122,15 +122,15 @@ body {
 /* top dark bar */
 .pick-title-wrap {
   position: absolute;
-  left: 170px;
-  top: 40px;
-  width: 1295px;
-  height: 230px;
+  left: 165px;
+  top: 42px;
+  width: 1300px;
+  height: 232px;
   background: linear-gradient(90deg, #330000 0%, #5b0000 50%, #2a0000 100%);
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding-right: 110px;
+  padding-right: 100px;
   overflow: hidden;
   z-index: 2;
   opacity: 0;
@@ -150,10 +150,10 @@ body {
 /* character */
 .character-wrap {
   position: absolute;
-  left: 0;
+  left: 8px;
   top: -110px;
-  width: 430px;
-  height: 470px;
+  width: 450px;
+  height: 500px;
   z-index: 5;
   display: flex;
   align-items: flex-end;
@@ -174,14 +174,14 @@ body {
 .name-bar {
   position: absolute;
   left: 0;
-  top: 310px;
-  width: 1080px;
+  top: 315px;
+  width: 1110px;
   height: 96px;
   background: linear-gradient(180deg, #ff1414 0%, #db0000 100%);
-  clip-path: polygon(0 0, 100% 0, 90% 100%, 0% 100%);
+  clip-path: polygon(0 0, 100% 0, 89% 100%, 0% 100%);
   display: flex;
   align-items: center;
-  padding-left: 165px;
+  padding-left: 185px;
   z-index: 4;
   opacity: 0;
   box-shadow: 0 8px 20px rgba(0,0,0,0.22);
@@ -189,7 +189,7 @@ body {
 
 .player-name {
   font-family: 'AmericanCaptain', 'D-DINCondensed', sans-serif;
-  font-size: 88px;
+  font-size: 86px;
   line-height: 1;
   color: #ffffff;
   letter-spacing: 2px;
