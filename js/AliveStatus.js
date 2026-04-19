@@ -19,11 +19,14 @@ function parseGvizTable(json) {
 
 function createAliveRectangles(count) {
   const total = 4;
-  const isEliminated = count === 0;
-  let html = '<div class="alive-rectangles">';
+  const safeCount = Math.max(0, Math.min(total, parseInt(count, 10) || 0));
+  const isEliminated = safeCount === 0;
+
+  let html = '<div class="alive-wrapper">';
+  html += '<div class="alive-rectangles">';
 
   for (let i = 0; i < total; i++) {
-    html += `<div class="alive-rect-bar${i >= count ? ' dead' : ''}"></div>`;
+    html += `<div class="alive-rect-bar${i >= safeCount ? ' dead' : ''}"></div>`;
   }
 
   if (isEliminated) {
@@ -31,6 +34,9 @@ function createAliveRectangles(count) {
   }
 
   html += '</div>';
+  html += `<div class="alive-status-text ${isEliminated ? 'eliminated' : 'alive'}">${isEliminated ? 'ELIMINATED' : 'ALIVE'}</div>`;
+  html += '</div>';
+
   return html;
 }
 
@@ -49,7 +55,6 @@ function renderTable(table, shouldShow) {
   const totalPointsIdx = idx('total_points');
   const bluezoneIdx = idx('bluezone');
 
-  // ✅ Only keep valid rows where sr_no exists and team data exists
   const validRows = table.rows.filter(row => {
     const srNo = String(row[srNoIdx] ?? '').trim();
     const teamName = String(row[teamNameIdx] ?? '').trim();
@@ -58,7 +63,6 @@ function renderTable(table, shouldShow) {
     return srNo !== '' && !isNaN(Number(srNo)) && (teamName !== '' || teamInitial !== '');
   });
 
-  // ✅ Sort only valid rows
   const sortedRows = [...validRows].sort((a, b) => {
     const aTotal = parseInt(a[totalPointsIdx], 10) || 0;
     const bTotal = parseInt(b[totalPointsIdx], 10) || 0;
@@ -88,7 +92,7 @@ function renderTable(table, shouldShow) {
         <tr>
           <th style="width: 40px;">#</th>
           <th class="team" style="width: 160px;">TEAM NAME</th>
-          <th style="width: 70px;">ALIVE</th>
+          <th style="width: 80px;">ALIVE</th>
           <th style="width: 60px;">FIN</th>
           <th style="width: 80px;">TP</th>
         </tr>
@@ -99,11 +103,14 @@ function renderTable(table, shouldShow) {
   for (let i = 0; i < displayRows.length; i++) {
     const row = displayRows[i].data;
     const isBluezone = String(row[bluezoneIdx]).toLowerCase() === 'true';
+    const aliveCount = parseInt(row[playersAliveIdx], 10) || 0;
+    const teamLogo = row[teamLogoIdx] || '';
+    const teamText = row[teamInitialIdx] || row[teamNameIdx] || '';
 
     html += `<tr${isBluezone ? ' class="bluezone-blink"' : ''}>`;
     html += `<td>${displayRows[i].rank}</td>`;
-    html += `<td class="team"><img src="${row[teamLogoIdx] || ''}" alt="logo"><span>${row[teamInitialIdx] || row[teamNameIdx] || ''}</span></td>`;
-    html += `<td>${createAliveRectangles(parseInt(row[playersAliveIdx], 10) || 0)}</td>`;
+    html += `<td class="team"><img src="${teamLogo}" alt="logo"><span>${teamText}</span></td>`;
+    html += `<td>${createAliveRectangles(aliveCount)}</td>`;
     html += `<td>${parseInt(row[finishPointsIdx], 10) || 0}</td>`;
     html += `<td>${parseInt(row[totalPointsIdx], 10) || 0}</td>`;
     html += `</tr>`;
