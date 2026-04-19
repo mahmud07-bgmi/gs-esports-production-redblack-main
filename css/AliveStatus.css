@@ -180,19 +180,18 @@ tr.bluezone-blink {
   box-shadow: none;
 }
 
-/* STRIKE LINE - PERFECT FIX */
+/* STRIKE LINE - CENTER PERFECT */
 .alive-rect-strike {
   position: absolute;
-  width: 32px;              /* sirf bars ke width jitna */
+  width: 28px;              /* bars ke exact width */
   left: 50%;
-  transform: translateX(-50%);
-  bottom: 4px;              /* bars ke niche fixed */
-  border-top: 3px solid #ffffff;
-  z-index: 3;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-top: 2.5px solid #ffffff;
   opacity: 0.95;
+  z-index: 3;
   pointer-events: none;
 }
-
 /* BOTTOM LEGEND */
 .alive-legend {
   width: 440px;
