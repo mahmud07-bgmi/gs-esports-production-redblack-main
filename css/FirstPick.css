@@ -189,7 +189,7 @@ body {
 
 .player-name {
   font-family: 'AmericanCaptain', 'D-DINCondensed', sans-serif;
-  font-size: 84px;
+  font-size: 76px; /* 🔥 thoda chhota kiya (84 → 76) */
   line-height: 1;
   color: #ffffff;
   letter-spacing: 2px;
@@ -197,7 +197,7 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 760px;
+  max-width: 950px; /* 🔥 bada kiya (760 → 950) */
   text-shadow: 0 3px 8px rgba(0,0,0,0.25);
   position: relative;
   z-index: 9;
