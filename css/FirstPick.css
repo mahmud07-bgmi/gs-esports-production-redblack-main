@@ -150,7 +150,7 @@ body {
 /* CHARACTER */
 .character-wrap {
   position: absolute;
-  left: 10px;
+  left: 0;
   top: -112px;
   width: 430px;
   height: 470px;
