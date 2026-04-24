@@ -1,5 +1,6 @@
-// CONFIG: Set your Google Sheet URL here (published to web, not private)
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1gyzPFtG3ubxzrqGEtQI-dr4aiExDU6Fx0tzFS2W4iG8/';
+const REFRESH_EVERY = 2500;
+const ELIM_ANIMATION_DURATION = 2200;
 
 function getGvizUrl(sheetUrl) {
   const match = sheetUrl.match(/\/d\/([a-zA-Z0-9-_]+)/);
@@ -34,7 +35,157 @@ function createAliveRectangles(count) {
   return html;
 }
 
+let previousAliveMap = {};
+let previousRankMap = {};
+let previousSortedOrder = [];
+let frozenTeams = new Map();
+let pendingElimTeamKey = null;
+
+function now() {
+  return Date.now();
+}
+
+function cleanupFrozenTeams() {
+  const t = now();
+  for (const [key, expire] of frozenTeams.entries()) {
+    if (t >= expire) frozenTeams.delete(key);
+  }
+}
+
+function ensureElimOverlay() {
+  const container = document.getElementById('table-container');
+  if (!container) return null;
+
+  let overlay = document.getElementById('elim-row-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'elim-row-overlay';
+    overlay.className = 'elim-row-overlay';
+    overlay.innerHTML = '<div class="elim-row-overlay-text">ELIMINATED</div>';
+    container.appendChild(overlay);
+  }
+  return overlay;
+}
+
+function triggerRowElimAnimation(teamKey) {
+  pendingElimTeamKey = teamKey;
+  frozenTeams.set(teamKey, now() + ELIM_ANIMATION_DURATION);
+}
+
+function getRowTopRelativeToContainer(rowEl, containerEl) {
+  const rowRect = rowEl.getBoundingClientRect();
+  const containerRect = containerEl.getBoundingClientRect();
+  return rowRect.top - containerRect.top;
+}
+
+function playPendingElimAnimation() {
+  if (!pendingElimTeamKey) return;
+
+  const rowEl = document.querySelector(`tr[data-team-key="${pendingElimTeamKey}"]`);
+  const container = document.getElementById('table-container');
+  const overlay = ensureElimOverlay();
+
+  if (!rowEl || !container || !overlay) {
+    pendingElimTeamKey = null;
+    return;
+  }
+
+  const rowTop = getRowTopRelativeToContainer(rowEl, container);
+  overlay.style.top = `${rowTop}px`;
+  overlay.classList.remove('show');
+
+  const textEl = overlay.querySelector('.elim-row-overlay-text');
+  if (textEl) {
+    textEl.style.animation = 'none';
+    void textEl.offsetWidth;
+    textEl.style.animation = '';
+  }
+
+  void overlay.offsetWidth;
+  overlay.classList.add('show');
+
+  const thisTeam = pendingElimTeamKey;
+  pendingElimTeamKey = null;
+
+  setTimeout(() => {
+    overlay.classList.remove('show');
+    frozenTeams.delete(thisTeam);
+  }, ELIM_ANIMATION_DURATION);
+}
+
+function detectEliminations(validRows, indexes) {
+  const {
+    srNoIdx,
+    teamNameIdx,
+    teamInitialIdx,
+    playersAliveIdx
+  } = indexes;
+
+  const currentAliveMap = {};
+
+  validRows.forEach(row => {
+    const teamKey = String(row[srNoIdx] ?? '').trim();
+    const teamName =
+      String(row[teamInitialIdx] ?? '').trim() ||
+      String(row[teamNameIdx] ?? '').trim() ||
+      'TEAM';
+    const alive = parseInt(row[playersAliveIdx], 10) || 0;
+
+    if (!teamKey) return;
+
+    currentAliveMap[teamKey] = { name: teamName, alive };
+
+    const previous = previousAliveMap[teamKey];
+    if (previous && previous.alive > 0 && alive === 0 && !frozenTeams.has(teamKey)) {
+      triggerRowElimAnimation(teamKey);
+    }
+  });
+
+  previousAliveMap = currentAliveMap;
+}
+
+function stableSortRows(rows, indexes) {
+  const {
+    srNoIdx,
+    finishPointsIdx,
+    totalPointsIdx,
+    playersAliveIdx
+  } = indexes;
+
+  return [...rows].sort((a, b) => {
+    const aKey = String(a[srNoIdx] ?? '').trim();
+    const bKey = String(b[srNoIdx] ?? '').trim();
+
+    const aFrozen = frozenTeams.has(aKey);
+    const bFrozen = frozenTeams.has(bKey);
+
+    if (aFrozen || bFrozen) {
+      const aPrev = previousSortedOrder.indexOf(aKey);
+      const bPrev = previousSortedOrder.indexOf(bKey);
+      if (aPrev !== -1 && bPrev !== -1) return aPrev - bPrev;
+    }
+
+    const aTotal = parseInt(a[totalPointsIdx], 10) || 0;
+    const bTotal = parseInt(b[totalPointsIdx], 10) || 0;
+    if (bTotal !== aTotal) return bTotal - aTotal;
+
+    const aFinish = parseInt(a[finishPointsIdx], 10) || 0;
+    const bFinish = parseInt(b[finishPointsIdx], 10) || 0;
+    if (bFinish !== aFinish) return bFinish - aFinish;
+
+    const aAlive = parseInt(a[playersAliveIdx], 10) || 0;
+    const bAlive = parseInt(b[playersAliveIdx], 10) || 0;
+    if (bAlive !== aAlive) return bAlive - aAlive;
+
+    const aRank = parseInt(a[srNoIdx], 10) || 0;
+    const bRank = parseInt(b[srNoIdx], 10) || 0;
+    return aRank - bRank;
+  });
+}
+
 function renderTable(table, shouldShow) {
+  cleanupFrozenTeams();
+
   const idx = key =>
     table.headers.findIndex(
       h => String(h).toLowerCase().replace(/\s/g, '_') === key
@@ -53,27 +204,24 @@ function renderTable(table, shouldShow) {
     const srNo = String(row[srNoIdx] ?? '').trim();
     const teamName = String(row[teamNameIdx] ?? '').trim();
     const teamInitial = String(row[teamInitialIdx] ?? '').trim();
-
     return srNo !== '' && !isNaN(Number(srNo)) && (teamName !== '' || teamInitial !== '');
   });
 
-  const sortedRows = [...validRows].sort((a, b) => {
-    const aTotal = parseInt(a[totalPointsIdx], 10) || 0;
-    const bTotal = parseInt(b[totalPointsIdx], 10) || 0;
-    if (bTotal !== aTotal) return bTotal - aTotal;
-
-    const aFinish = parseInt(a[finishPointsIdx], 10) || 0;
-    const bFinish = parseInt(b[finishPointsIdx], 10) || 0;
-    if (bFinish !== aFinish) return bFinish - aFinish;
-
-    const aAlive = parseInt(a[playersAliveIdx], 10) || 0;
-    const bAlive = parseInt(b[playersAliveIdx], 10) || 0;
-    if (bAlive !== aAlive) return bAlive - aAlive;
-
-    const aRank = parseInt(a[srNoIdx], 10) || 0;
-    const bRank = parseInt(b[srNoIdx], 10) || 0;
-    return aRank - bRank;
+  detectEliminations(validRows, {
+    srNoIdx,
+    teamNameIdx,
+    teamInitialIdx,
+    playersAliveIdx
   });
+
+  const sortedRows = stableSortRows(validRows, {
+    srNoIdx,
+    finishPointsIdx,
+    totalPointsIdx,
+    playersAliveIdx
+  });
+
+  previousSortedOrder = sortedRows.map(row => String(row[srNoIdx] ?? '').trim());
 
   const displayRows = sortedRows.map((row, i) => ({
     rank: i + 1,
@@ -96,10 +244,20 @@ function renderTable(table, shouldShow) {
 
   for (let i = 0; i < displayRows.length; i++) {
     const row = displayRows[i].data;
+    const teamKey = String(row[srNoIdx] ?? '').trim();
     const isBluezone = String(row[bluezoneIdx]).toLowerCase() === 'true';
 
-    html += `<tr${isBluezone ? ' class="bluezone-blink"' : ''}>`;
-    html += `<td>${displayRows[i].rank}</td>`;
+    const oldRank = previousRankMap[teamKey];
+    const newRank = i + 1;
+
+    let moveClass = '';
+    if (!frozenTeams.has(teamKey) && oldRank) {
+      if (newRank < oldRank) moveClass = ' move-up';
+      if (newRank > oldRank) moveClass = ' move-down';
+    }
+
+    html += `<tr data-team-key="${teamKey}" class="${isBluezone ? 'bluezone-blink' : ''}${moveClass}">`;
+    html += `<td>${newRank}</td>`;
     html += `<td class="team"><img src="${row[teamLogoIdx] || ''}" alt="logo"><span>${row[teamInitialIdx] || row[teamNameIdx] || ''}</span></td>`;
     html += `<td>${createAliveRectangles(parseInt(row[playersAliveIdx], 10) || 0)}</td>`;
     html += `<td>${parseInt(row[finishPointsIdx], 10) || 0}</td>`;
@@ -132,6 +290,14 @@ function renderTable(table, shouldShow) {
   }
 
   container.innerHTML = html;
+  ensureElimOverlay();
+  playPendingElimAnimation();
+
+  previousRankMap = {};
+  displayRows.forEach((item, index) => {
+    const key = String(item.data[srNoIdx] ?? '').trim();
+    previousRankMap[key] = index + 1;
+  });
 }
 
 function updateVisibility(table) {
@@ -153,7 +319,6 @@ function updateVisibility(table) {
     const srNo = String(row[srNoIdx] ?? '').trim();
     const teamName = String(row[teamNameIdx] ?? '').trim();
     const teamInitial = String(row[teamInitialIdx] ?? '').trim();
-
     return srNo !== '' && !isNaN(Number(srNo)) && (teamName !== '' || teamInitial !== '');
   });
 
@@ -165,7 +330,6 @@ function updateVisibility(table) {
   return teamsWithPlayersAlive > 4;
 }
 
-// Main logic
 const gvizUrl = getGvizUrl(SHEET_URL);
 let lastTable = { headers: [], rows: [] };
 
@@ -203,4 +367,4 @@ function fetchData() {
 }
 
 fetchData();
-setInterval(fetchData, 2000);
+setInterval(fetchData, REFRESH_EVERY);
