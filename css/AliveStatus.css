@@ -32,11 +32,12 @@ body,
 .table-alive th,
 .table-alive td,
 .alive-legend,
-.alive-legend-item {
+.alive-legend-item,
+.elim-row-overlay,
+.elim-row-overlay-text {
   font-family: 'Gonstet', 'Montserrat', Arial, sans-serif !important;
 }
 
-/* RED ALERT / BLUEZONE BLINK */
 @keyframes blink-blue-bg {
   0%, 100% {
     background-color: inherit;
@@ -96,7 +97,9 @@ tr.bluezone-blink {
 .table-alive tbody tr {
   height: 50px;
   background: var(--row-dark);
-  transition: background 0.3s ease;
+  transition: background 0.25s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .table-alive tbody tr:nth-child(even) {
@@ -105,6 +108,37 @@ tr.bluezone-blink {
 
 .table-alive tbody tr:hover {
   background: var(--row-hover);
+}
+
+/* POSITION MOVE ANIMATION */
+.table-alive tbody tr.move-up {
+  animation: rowMoveUp 0.45s ease;
+}
+
+.table-alive tbody tr.move-down {
+  animation: rowMoveDown 0.45s ease;
+}
+
+@keyframes rowMoveUp {
+  0% {
+    transform: translateY(18px);
+    filter: brightness(1.15);
+  }
+  100% {
+    transform: translateY(0);
+    filter: brightness(1);
+  }
+}
+
+@keyframes rowMoveDown {
+  0% {
+    transform: translateY(-18px);
+    filter: brightness(1.15);
+  }
+  100% {
+    transform: translateY(0);
+    filter: brightness(1);
+  }
 }
 
 /* TEXT */
@@ -192,7 +226,7 @@ tr.bluezone-blink {
   opacity: 0.9;
 }
 
-/* BOTTOM LEGEND */
+/* LEGEND */
 .alive-legend {
   width: 440px;
   margin: 0 auto;
@@ -247,11 +281,12 @@ body {
   overflow: hidden;
 }
 
-/* SLIDE ANIMATION */
+/* TABLE CONTAINER */
 .table-container {
   position: absolute;
   right: 0;
   top: 0;
+  width: 440px;
   transition: transform 0.8s ease-in-out;
 }
 
@@ -271,4 +306,61 @@ body {
   text-align: center;
   margin-top: 40px;
   font-size: 22px;
+}
+
+/* SINGLE ROW ELIM OVERLAY */
+.elim-row-overlay {
+  position: absolute;
+  left: -10px;   /* 👈 left side se bada */
+  width: 480px;  /* 👈 thoda extra width */
+  height: 50px;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+  display: none;
+}
+
+.elim-row-overlay.show {
+  display: block;
+}
+
+.elim-row-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.14) 0 10px,
+    rgba(225, 6, 0, 0.88) 10px 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    inset 0 -1px 0 rgba(0,0,0,0.18);
+}
+
+.elim-row-overlay-text {
+  position: absolute;
+  top: 50%;
+  left: -70%;
+  transform: translateY(-50%);
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #ffffff;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.35);
+}
+
+.elim-row-overlay.show .elim-row-overlay-text {
+  animation: elimRowSlide 2.2s linear forwards;
+}
+
+@keyframes elimRowSlide {
+  0% {
+    left: -70%;
+  }
+  100% {
+    left: 110%;
+  }
 }
