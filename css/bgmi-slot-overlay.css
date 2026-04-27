@@ -35,16 +35,26 @@ body {
 .top-logo {
   position: absolute;
 
-  left: 15px;   /* adjust if needed */
-  top: 70px;    /* adjust if needed */
+  left: 8px;
+  top: 72px;
 
   width: 105px;
-  height: 52px;
+  height: 44px;
 
   object-fit: contain;
-  object-position: center;
 
   z-index: 5;
+
+  /* 🔥 slight tilt (zyada nahi) */
+  transform: rotate(-15deg);
+
+  /* 🔥 clip mask (right side cut) */
+  clip-path: polygon(
+    0% 0%,
+    100% 0%,
+    85% 100%,
+    0% 100%
+  );
 }
 
 /* ========================= */
@@ -52,8 +62,8 @@ body {
 /* ========================= */
 .logo-wrap {
   position: absolute;
-  left: 538px;
-  top: 793px;
+  left: 623px;
+  top: 848px;
   width: 90px;
   height: 90px;
 
@@ -76,10 +86,10 @@ body {
 /* ========================= */
 .team-name {
   position: absolute;
-  left: 628px;
-  top: 782px;
+  left: 722px;
+  top: 839px;
   width: 520px;
-  height: 64px;
+  height: 62px;
 
   display: flex;
   align-items: center;
@@ -89,7 +99,7 @@ body {
   /* 🔥 FONT CHANGE */
   font-family: 'AgencyB', sans-serif;
 
-  font-size: 36px;
+  font-size: 32px;
   letter-spacing: 1.5px;
 
   text-transform: uppercase;
