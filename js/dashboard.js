@@ -1,5 +1,6 @@
 const SHEET_ID = "1gyzPFtG3ubxzrqGEtQI-dr4aiExDU6Fx0tzFS2W4iG8";
-const STORAGE_KEY = "bgmi_slot_overlay_state";
+
+const API_URL = "https://script.google.com/macros/s/AKfycbxEv6klLXzCTBY9QDtO0HaVQTePioPzJVNnDaehogrojk-6mC6Hi6riGj5TNcTjiBm0Zw/exec";
 
 const TEAMS_URL =
   `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Teams&tqx=out:json`;
@@ -27,19 +28,19 @@ function parseGViz(text) {
   return JSON.parse(text.substring(47).slice(0, -2));
 }
 
-function saveOverlayState(slot) {
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify({
-      selectedSlot: slot
-    })
-  );
+async function saveOverlayState(slot) {
+  await fetch(`${API_URL}?action=set&slot=${slot}`, {
+    cache: "no-store"
+  });
 }
 
-function loadOverlayState() {
+async function loadOverlayState() {
   try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-    selectedSlot = saved.selectedSlot ?? null;
+    const res = await fetch(`${API_URL}?action=get`, {
+      cache: "no-store"
+    });
+    const data = await res.json();
+    selectedSlot = Number(data.selectedSlot) || null;
   } catch {
     selectedSlot = null;
   }
@@ -75,11 +76,12 @@ function renderCards(rows) {
       <div class="card-name">${name || `SLOT ${slot}`}</div>
     `;
 
-    card.addEventListener("click", () => {
+    card.addEventListener("click", async () => {
       selectedSlot = slot;
-      saveOverlayState(slot);
       updateStatus();
       renderCards(currentRows);
+
+      await saveOverlayState(slot);
     });
 
     teamGrid.appendChild(card);
@@ -87,7 +89,7 @@ function renderCards(rows) {
 }
 
 (async function init() {
-  loadOverlayState();
+  await loadOverlayState();
   currentRows = await loadTeams();
   renderCards(currentRows);
   updateStatus();
