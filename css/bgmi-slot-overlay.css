@@ -1,3 +1,7 @@
+@font-face {
+  font-family: 'AgencyB';
+  src: url('../font/AGENCYB.TTF') format('truetype');
+}
 body {
   margin: 0;
   width: 1920px;
@@ -81,8 +85,13 @@ body {
   align-items: center;
 
   color: #ffffff;
-  font-size: 34px;
-  font-weight: 900;
+
+  /* 🔥 FONT CHANGE */
+  font-family: 'AgencyB', sans-serif;
+
+  font-size: 36px;
+  letter-spacing: 1.5px;
+
   text-transform: uppercase;
 
   white-space: nowrap;
