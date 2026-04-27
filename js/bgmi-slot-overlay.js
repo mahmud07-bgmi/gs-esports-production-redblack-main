@@ -98,4 +98,4 @@ async function init() {
 }
 
 init();
-setInterval(init, 1500);
+setInterval(init, 1000);
