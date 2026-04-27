@@ -1,13 +1,14 @@
+const API_URL = "https://script.google.com/macros/s/AKfycbxEv6klLXzCTBY9QDtO0HaVQTePioPzJVNnDaehogrojk-6mC6Hi6riGj5TNcTjiBm0Zw/exec";
+
 const SHEET_ID = "1gyzPFtG3ubxzrqGEtQI-dr4aiExDU6Fx0tzFS2W4iG8";
-const STORAGE_KEY = "bgmi_slot_overlay_state";
 
 const TEAMS_URL =
   `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Teams&tqx=out:json`;
 
 const bgImg = document.getElementById("bgImg");
 const teamLogo = document.getElementById("teamLogo");
-const topLogo = document.getElementById("topLogo");
 const teamName = document.getElementById("teamName");
+const topLogo = document.getElementById("topLogo");
 
 function safeValue(cell) {
   return cell && cell.v !== null && cell.v !== undefined ? cell.v : "";
@@ -26,21 +27,22 @@ function parseGViz(text) {
   return JSON.parse(text.substring(47).slice(0, -2));
 }
 
-function getSelectedSlot() {
+function getBgBySlot(slot) {
+  return `assets/${slot}.png`;
+}
+
+async function getSelectedSlot() {
   try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-    return Number(saved.selectedSlot) || 1;
+    const res = await fetch(API_URL + "?action=get", { cache: "no-store" });
+    const data = await res.json();
+    return Number(data.selectedSlot) || 1;
   } catch {
     return 1;
   }
 }
 
-function getBgBySlot(slot) {
-  return `assets/${slot}.png`;
-}
-
 async function init() {
-  const selectedSlot = getSelectedSlot();
+  const selectedSlot = await getSelectedSlot();
 
   try {
     bgImg.src = getBgBySlot(selectedSlot);
@@ -62,40 +64,21 @@ async function init() {
 
       if (logo) {
         teamLogo.src = logo;
-        teamLogo.style.display = "block";
-
         topLogo.src = logo;
+
+        teamLogo.style.display = "block";
         topLogo.style.display = "block";
       } else {
-        teamLogo.removeAttribute("src");
         teamLogo.style.display = "none";
-
-        topLogo.removeAttribute("src");
         topLogo.style.display = "none";
       }
-    } else {
-      teamName.textContent = `SLOT ${selectedSlot}`;
-
-      teamLogo.removeAttribute("src");
-      teamLogo.style.display = "none";
-
-      topLogo.removeAttribute("src");
-      topLogo.style.display = "none";
     }
 
   } catch (err) {
     console.error(err);
-
-    bgImg.src = getBgBySlot(selectedSlot);
-    teamName.textContent = "OBS LOAD ERROR";
-
-    teamLogo.removeAttribute("src");
-    teamLogo.style.display = "none";
-
-    topLogo.removeAttribute("src");
-    topLogo.style.display = "none";
+    teamName.textContent = "LOAD ERROR";
   }
 }
 
 init();
-setInterval(init, 1000);
+setInterval(init, 1500);
