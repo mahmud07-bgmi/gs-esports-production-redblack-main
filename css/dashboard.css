@@ -38,7 +38,7 @@ body {
   border-radius: 16px;
   padding: 16px;
   line-height: 1.9;
-  font-size: 15px;
+  font-size: 45px;
 }
 
 .main-content {
@@ -91,7 +91,7 @@ body {
   position: absolute;
   top: 18px;
   right: 18px;
-  font-size: 13px;
+  font-size: 45px;
   letter-spacing: 4px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.35);
@@ -105,7 +105,7 @@ body {
 }
 
 .card-name {
-  font-size: 22px;
+  font-size: 32px;
   font-weight: 900;
   line-height: 1.25;
   text-transform: uppercase;
