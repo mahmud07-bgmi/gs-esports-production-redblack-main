@@ -1,94 +1,113 @@
-const SHEET_ID = "1gyzPFtG3ubxzrqGEtQI-dr4aiExDU6Fx0tzFS2W4iG8";
-const STORAGE_KEY = "bgmi_slot_overlay_state";
-
-const TEAMS_URL =
-  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Teams&tqx=out:json`;
-
-const teamGrid = document.getElementById("teamGrid");
-const selectedSlotText = document.getElementById("selectedSlotText");
-
-let selectedSlot = null;
-let currentRows = [];
-
-function safeValue(cell) {
-  return cell && cell.v !== null && cell.v !== undefined ? cell.v : "";
+* {
+  box-sizing: border-box;
 }
 
-function textValue(cell) {
-  return String(safeValue(cell)).trim();
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(135deg, #06101d 0%, #09182b 100%);
+  color: #ffffff;
 }
 
-function numberValue(cell, fallback = 0) {
-  const n = Number(safeValue(cell));
-  return Number.isFinite(n) ? n : fallback;
+.app {
+  display: flex;
+  min-height: 100vh;
 }
 
-function parseGViz(text) {
-  return JSON.parse(text.substring(47).slice(0, -2));
+.sidebar {
+  width: 300px;
+  padding: 28px 22px;
+  background: rgba(3, 11, 22, 0.95);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-function saveOverlayState(slot) {
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify({
-      selectedSlot: slot
-    })
-  );
+.brand {
+  font-size: 30px;
+  font-weight: 900;
+  margin-bottom: 30px;
 }
 
-function loadOverlayState() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-    selectedSlot = saved.selectedSlot ?? null;
-  } catch {
-    selectedSlot = null;
-  }
+.menu-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 26px;
 }
 
-async function loadTeams() {
-  const res = await fetch(TEAMS_URL, { cache: "no-store" });
-  const text = await res.text();
-  const json = parseGViz(text);
-  return json.table.rows || [];
+.status-box {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 16px;
+  line-height: 1.9;
+  font-size: 45px;
 }
 
-function updateStatus() {
-  selectedSlotText.textContent = selectedSlot ?? "-";
+.main-content {
+  flex: 1;
+  padding: 28px;
 }
 
-function renderCards(rows) {
-  teamGrid.innerHTML = "";
-
-  rows.forEach((row) => {
-    const slot = numberValue(row.c[0], 0);
-    const name = textValue(row.c[1]);
-    const logo = textValue(row.c[3]);
-
-    if (!slot) return;
-
-    const card = document.createElement("div");
-    card.className = "team-card" + (slot === selectedSlot ? " active" : "");
-
-    card.innerHTML = `
-      <div class="slot-label">SLOT ${slot}</div>
-      <img class="card-logo" src="${logo}" alt="">
-      <div class="card-name">${name || `SLOT ${slot}`}</div>
-    `;
-
-    card.addEventListener("click", () => {
-      selectedSlot = slot;
-      saveOverlayState(slot);
-      updateStatus();
-      renderCards(currentRows);
-    });
-
-    teamGrid.appendChild(card);
-  });
+.topbar {
+  margin-bottom: 24px;
 }
 
-(async function init() {
-  loadOverlayState();
-  currentRows = await loadTeams();
-  renderCards(currentRows);
-  updateStatus();
-})();
+.topbar h1 {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 900;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(240px, 1fr));
+  gap: 22px;
+}
+
+.team-card {
+  position: relative;
+  min-height: 160px;
+  border-radius: 24px;
+  padding: 22px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  overflow: hidden;
+}
+
+.team-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(28, 180, 255, 0.45);
+}
+
+.team-card.active {
+  border-color: #22b8ff;
+  box-shadow: 0 0 28px rgba(34, 184, 255, 0.28);
+}
+
+.slot-label {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  font-size: 45px;
+  letter-spacing: 4px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.card-logo {
+  width: 74px;
+  height: 74px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.card-name {
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1.25;
+  text-transform: uppercase;
+  word-break: break-word;
+}
