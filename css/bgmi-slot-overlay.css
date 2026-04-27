@@ -13,51 +13,81 @@ body {
   top: 0;
   width: 1920px;
   height: 1080px;
-  display: block;
 }
 
+/* BACKGROUND SLOT IMAGE (PNG with design) */
 .bg-img {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
+  width: 1920px;
+  height: 1080px;
   object-fit: cover;
   object-position: center;
-  display: block;
 }
 
+/* ========================= */
+/* 🔥 TOP LOGO (PNG ke upar direct) */
+/* ========================= */
+.top-logo {
+  position: absolute;
+
+  left: 15px;   /* adjust if needed */
+  top: 70px;    /* adjust if needed */
+
+  width: 105px;
+  height: 52px;
+
+  object-fit: contain;
+  object-position: center;
+
+  z-index: 5;
+}
+
+/* ========================= */
+/* 🔥 BOTTOM SQUARE LOGO */
+/* ========================= */
 .logo-wrap {
   position: absolute;
-  left: 520px;
-  top: 914px;
+  left: 538px;
+  top: 793px;
   width: 90px;
   height: 90px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
+  overflow: hidden;
 }
 
 .team-logo {
-  max-width: 74px;
-  max-height: 74px;
+  max-width: 68px;
+  max-height: 68px;
   object-fit: contain;
-  display: block;
+  object-position: center;
 }
 
+/* ========================= */
+/* 🔥 TEAM NAME RIBBON */
+/* ========================= */
 .team-name {
   position: absolute;
   left: 628px;
-  top: 916px;
+  top: 782px;
   width: 520px;
   height: 64px;
+
   display: flex;
   align-items: center;
-  color: #111;
-  font-size: 28px;
+
+  color: #ffffff;
+  font-size: 34px;
   font-weight: 900;
   text-transform: uppercase;
+
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1;
+
+  text-shadow: 0 2px 6px rgba(0,0,0,0.6);
 }
